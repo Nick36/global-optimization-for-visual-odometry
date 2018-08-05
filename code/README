@@ -1,0 +1,64 @@
+Global keyframe-based optimization of the keyframe pose estimates delivered by DSO
+
+
+Dependancies and CMake:
+
+We have locally installed specific versions of some libraries ensuring their compatibility with each other.
+
+The Eigen version we employ is 3.2.5 built from source (available at http://eigen.tuxfamily.org/index.php?title=News:Eigen_3.2.5_released!) for compatibility with the GTSAM library under the tag 4.0.0-alpha1.
+
+A library decsription and the installation steps for Polyclipping can be found at http://www.angusj.com/delphi/clipper.php
+
+Let <LOCAL_INSTALL_DIR> be the directory, in which you locally install libraries.
+
+The installation steps for OpenCV with extra modules are the following:
+
+cd <LOCAL_INSTALL_DIR>
+git clone https://github.com/opencv/opencv.git
+cd opencv
+mkdir build
+cd build/
+cmake -DOPENCV_EXTRA_MODULES_PATH=<LOCAL_INSTALL_DIR>/opencv_contrib/modules -D CMAKE_INSTALL_PREFIX=<LOCAL_INSTALL_DIR>/local ..
+make -j6
+make install
+
+The installation steps for GTSAM are the following:
+
+cd <LOCAL_INSTALL_DIR>
+git clone https://bitbucket.org/gtborg/gtsam.git
+git reset --hard 4.0.0-alpha1
+cd gtsam
+mkdir build
+cd build/
+cmake -D CMAKE_INSTALL_PREFIX=<LOCAL_INSTALL_DIR>/local ..
+make -j6
+make install
+
+You should also install the OpenCV, GTSAM, Eigen and Polyclipping libraries and set the LOCAL_INSTALL_DIR variable in the <dso>/CMakeLists.txt and <dso>/thirdparty/DBoW2/CMakeLists.txt files to match their installation directory, where <dso> is your DSO installation directory.
+
+Furthermore, you need to extract the file <dso>/code/Vocabulary/ORBvoc.txt.tar.gz into the <dso>/code/Vocabulary/ directory.
+
+To compile the DSO executable, issue the following commands:
+
+cd <dso>/thirdparty/DBoW2/
+make -j6
+
+cd <dso>
+mkdir build
+cd build
+cmake ..
+make -j6
+
+
+Notes on the code: 
+
+This is an enhancement of the code from the original DSO publication by Engel et al. available at https://github.com/JakobEngel/dso. 
+
+The files <dso>/code/src/FullSystem/ORBextractor.cpp and <dso>/code/src/FullSystem/ORBextractor.h, as well as <dso>/code/Vocabulary/ORBvoc.txt.tar.gz, are taken from the ORB-SLAM2 code available at https://github.com/raulmur/ORB_SLAM2.
+
+The main contribution written by Nikolay Paleshnikov and pertaining to a global trajectory optimization as decribed in his Bachelor thesis "Global Keyfame-Based Optimization for a Direct Sparse Visual Odometry Approach" encompasses the file <dso>/code/src/FullSystem/LoopClosing.cpp, as well as all code snippets preceded by a //DSSLAM comment line throughout the rest of the code. 
+
+
+For more details on the options and dependancies of DSO, we refer to the DSO\ README.txt file in the same directory.
+
+For detailed explanation of the evaluation scripts, take note of README.md in the ./ATE\ and\ RPE\ evaluation directory.

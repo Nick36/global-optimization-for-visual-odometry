@@ -1,0 +1,1 @@
+/home/paleshnikov/code/dso/thirdparty/DBoW2/CMakeFiles/DBoW2.dir
